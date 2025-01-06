@@ -6,24 +6,13 @@
 :root {
 	font-family: 'Martian Mono', monospace;
 	--menu-bg: #161616;
-	--menu-text: #C2C2C2;
-	--menu-border: #C2C2C250;
-
 	--web-bg: #0C122B;
-	--web-text: #B3BEEA;
-	--web-border: #B3BEEA50;
-
 	--youtube-bg: #360B0B;
-	--youtube-text: #EBB7B7;
-	--youtube-border: #EBB7B750;
-
 	--tiktok-bg: #112C2B;
-	--tiktok-text: #ABDEDC;
-	--tiktok-border: #ABDEDC50;
-
 	--instagram-bg: #3C1A31;
-	--instagram-text: #E8CADE;
-	--instagram-border: #E8CADE50;
+
+	--text-color: #FFFFFFBB;
+	--border-color: #FFFFFF50;
 }
 
 body {
