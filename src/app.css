@@ -6,13 +6,25 @@
 :root {
 	font-family: 'Martian Mono', monospace;
 	--menu-bg: #161616;
-	--web-bg: #0C122B;
-	--youtube-bg: #360B0B;
-	--tiktok-bg: #112C2B;
-	--instagram-bg: #3C1A31;
 
-	--text-color: #FFFFFFBB;
-	--border-color: #FFFFFF50;
+	--web-bg: #10183d;
+	--web-bg-2: #212e68;
+	--web-gradient: linear-gradient(55deg, var(--web-bg), var(--web-bg-2));
+
+	--youtube-bg: #300b0b;
+	--youtube-bg-2: #6d1919;
+	--youtube-gradient: linear-gradient(55deg, var(--youtube-bg), var(--youtube-bg-2));
+
+	--tiktok-bg: #004346;
+	--tiktok-bg-2: #700034;
+	--tiktok-gradient: linear-gradient(55deg, var(--tiktok-bg) 10%, var(--tiktok-bg-2));
+
+	--instagram-bg: #4b0d35;
+	--instagram-bg-2: #915006;
+	--instagram-gradient: linear-gradient(55deg, var(--instagram-bg), var(--instagram-bg-2));
+
+	--text-color: #ffffffbb;
+	--border-color: #ffffff50;
 }
 
 body {
