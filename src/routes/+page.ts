@@ -1,3 +1,10 @@
-// since there's no dynamic data here, we can prerender
-// it so that it gets served as a static asset in production
+import { frames } from '$lib/sea_animation';
+
 export const prerender = true;
+
+
+export function load() {
+  return {
+    frames: frames
+  };
+}

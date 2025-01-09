@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	let { data } = $props();
 
-	let theme: string = 'menu';
+	let theme: string = $state('menu');
 
-	let windowWidth = 0;
-	let windowHeight = 0;
+	let windowWidth = $state(0);
+	let windowHeight = $state(0);
 
-	let cursorX = 0;
-	let cursorY = 0;
+	let cursorX = $state(0);
+	let cursorY = $state(0);
 
 	const fullTitle = 'NICHE INTERNET';
-	let title = fullTitle[0];
+	let title = $state(fullTitle[0]);
+	let blinkingCursor = $state("_");
+
+	let frame = $state(0);
+	let frameOffsets: number[] = $state([]);
+	let animationX = $state(0);
 
 	onMount(() => {
 		windowWidth = window.innerWidth;
@@ -22,6 +28,12 @@
 		window.addEventListener('resize', () => {
 			windowWidth = window.innerWidth;
 			windowHeight = window.innerHeight;
+
+			frameOffsets = Array.from(
+				{ length: (Math.floor(windowWidth / 259.2)) },
+				() => Math.floor(Math.random() * 5) + 1
+			);
+			frameOffsets.push(frameOffsets[0]);
 		});
 
 		const titleInterval = setInterval(() => {
@@ -29,7 +41,27 @@
 			if (title.length === fullTitle.length) {
 				clearInterval(titleInterval);
 			}
+		}, 100);
+
+		setInterval(() => {
+			blinkingCursor = blinkingCursor === '_' ? ' ' : '_';
+		}, 1000);
+
+		setInterval(() => {
+			if (frame === data.frames.length - 1) {
+				frame = 0;
+			} else frame++;
+
+			if (animationX >= (frameOffsets.length - 1) * 18) {
+				animationX = 0;
+			} else animationX++;
 		}, 80);
+
+		frameOffsets = Array.from(
+			{ length: (Math.floor(windowWidth / 259.2)) },
+			() => Math.floor(Math.random() * 8)
+		);
+		frameOffsets.push(frameOffsets[0]);
 	});
 
 	function updateCursorPosition(e: MouseEvent) {
@@ -67,11 +99,25 @@
 		: 'opacity: 0;'}"
 ></div>
 
+<div class="flex absolute w-screen bottom-3 left-0 z-10 text-2xl overflow-hidden">
+	{#each frameOffsets as offset}
+		<div class="transform-wrapper" style="transform: translateX({ -259.2 * (frameOffsets.length - 1) + animationX * 14.4 }px);">
+			<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+		</div>
+		
+	{/each}
+	{#each frameOffsets as offset}
+	<div class="transform-wrapper" style="transform: translateX({ -259.2 * (frameOffsets.length - 1) + animationX * 14.4 }px);">
+		<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+	</div>
+	{/each}
+</div>
+
 <div
 	class="bg min-h-screen overflow-hidden"
 	role="presentation"
 	style={theme === 'menu' ? 'color: var(--text-color);' : 'color: var(--border-color);'}
-	on:mousemove={(e) => updateCursorPosition(e)}
+	onmousemove={(e) => updateCursorPosition(e)}
 >
 	<header class="p-3 flex justify-between">
 		<div>
@@ -88,12 +134,12 @@
 			0.01}px);"
 	>
 		<h2 style="color: var(--border-color);">discover unknown websites and creators</h2>
-		<h1 class="title mb-4">{title}</h1>
+		<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
 		<div class="grid grid-cols-2 grid-rows-2 gap-2">
 			<a
 				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				on:mouseenter={() => (theme = 'web')}
-				on:mouseleave={() => (theme = 'menu')}
+				onmouseenter={() => (theme = 'web')}
+				onmouseleave={() => (theme = 'menu')}
 				style={theme === 'web' || theme === 'menu' ? 'color: var(--text-color);' : ''}
 				href="/"
 			>
@@ -102,8 +148,8 @@
 
 			<a
 				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				on:mouseenter={() => (theme = 'youtube')}
-				on:mouseleave={() => (theme = 'menu')}
+				onmouseenter={() => (theme = 'youtube')}
+				onmouseleave={() => (theme = 'menu')}
 				style={theme === 'youtube' || theme === 'menu' ? 'color: var(--text-color);' : ''}
 				href="/youtube"
 			>
@@ -112,8 +158,8 @@
 
 			<a
 				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				on:mouseenter={() => (theme = 'tiktok')}
-				on:mouseleave={() => (theme = 'menu')}
+				onmouseenter={() => (theme = 'tiktok')}
+				onmouseleave={() => (theme = 'menu')}
 				style={theme === 'tiktok' || theme === 'menu' ? 'color: var(--text-color);' : ''}
 				href="/"
 			>
@@ -122,8 +168,8 @@
 
 			<a
 				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				on:mouseenter={() => (theme = 'instagram')}
-				on:mouseleave={() => (theme = 'menu')}
+				onmouseenter={() => (theme = 'instagram')}
+				onmouseleave={() => (theme = 'menu')}
 				style={theme === 'instagram' || theme === 'menu' ? 'color: var(--text-color);' : ''}
 				href="/"
 			>
@@ -160,5 +206,15 @@
 
 	a.card:hover {
 		color: inherit;
+	}
+
+	.sea-animation {
+		white-space: pre;
+		color: transparent;
+		line-height: 1;
+		background: linear-gradient(to bottom, var(--border-color) 30%, rgba(255, 255, 255, 0));
+		-webkit-background-clip: text;
+		background-clip: text;
+		user-select: none;
 	}
 </style>
