@@ -12,7 +12,7 @@
 
 	const fullTitle = 'NICHE INTERNET';
 	let title = $state(fullTitle[0]);
-	let blinkingCursor = $state("_");
+	let blinkingCursor = $state('_');
 
 	let frame = $state(0);
 	let frameOffsets: number[] = $state([]);
@@ -30,7 +30,7 @@
 			windowHeight = window.innerHeight;
 
 			frameOffsets = Array.from(
-				{ length: (Math.floor(windowWidth / 259.2)) },
+				{ length: Math.floor(windowWidth / 259.2) },
 				() => Math.floor(Math.random() * 5) + 1
 			);
 			frameOffsets.push(frameOffsets[0]);
@@ -57,9 +57,8 @@
 			} else animationX++;
 		}, 80);
 
-		frameOffsets = Array.from(
-			{ length: (Math.floor(windowWidth / 259.2)) },
-			() => Math.floor(Math.random() * 8)
+		frameOffsets = Array.from({ length: Math.floor(windowWidth / 259.2) }, () =>
+			Math.floor(Math.random() * 8)
 		);
 		frameOffsets.push(frameOffsets[0]);
 	});
@@ -99,27 +98,13 @@
 		: 'opacity: 0;'}"
 ></div>
 
-<div class="flex absolute w-screen bottom-3 left-0 z-10 text-2xl overflow-hidden">
-	{#each frameOffsets as offset}
-		<div class="transform-wrapper" style="transform: translateX({ -259.2 * (frameOffsets.length - 1) + animationX * 14.4 }px);">
-			<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
-		</div>
-		
-	{/each}
-	{#each frameOffsets as offset}
-	<div class="transform-wrapper" style="transform: translateX({ -259.2 * (frameOffsets.length - 1) + animationX * 14.4 }px);">
-		<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
-	</div>
-	{/each}
-</div>
-
 <div
 	class="bg min-h-screen overflow-hidden"
 	role="presentation"
 	style={theme === 'menu' ? 'color: var(--text-color);' : 'color: var(--border-color);'}
 	onmousemove={(e) => updateCursorPosition(e)}
 >
-	<header class="p-3 flex justify-between">
+	<header class="p-3 flex justify-between z-30">
 		<div>
 			<a href="/">faq</a>
 			<a href="/">about</a>
@@ -133,6 +118,8 @@
 			windowHeight / 2) *
 			0.01}px);"
 	>
+		<div class="framing absolute z-20"></div>
+
 		<h2 style="color: var(--border-color);">discover unknown websites and creators</h2>
 		<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
 		<div class="grid grid-cols-2 grid-rows-2 gap-2">
@@ -176,6 +163,25 @@
 				<h2>NICHE INSTAGRAM</h2>
 			</a>
 		</div>
+
+		<div class="flex absolute w-screen bottom-3 left-0 z-10 text-2xl overflow-hidden">
+			{#each frameOffsets as offset}
+				<div
+					class="transform-wrapper"
+					style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+				>
+					<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+				</div>
+			{/each}
+			{#each frameOffsets as offset}
+				<div
+					class="transform-wrapper"
+					style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+				>
+					<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+				</div>
+			{/each}
+		</div>
 	</section>
 </div>
 
@@ -216,5 +222,19 @@
 		-webkit-background-clip: text;
 		background-clip: text;
 		user-select: none;
+	}
+
+	header {
+		background-color: var(--menu-bg);
+	}
+
+	.framing {
+		height: calc(100% - 1rem);
+		width: calc(100% - 2rem);
+		top: 0;
+		margin: auto;
+		border-radius: 2rem;
+		box-shadow: 0 0 0 10rem vaR(--menu-bg);
+		pointer-events: none;
 	}
 </style>
