@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 	let { data } = $props();
 
 	let theme: string = $state('menu');
@@ -13,10 +14,13 @@
 	const fullTitle = 'NICHE INTERNET';
 	let title = $state(fullTitle[0]);
 	let blinkingCursor = $state('_');
+	let titleInterval: NodeJS.Timeout;
+	let cursorInterval: NodeJS.Timeout;
 
 	let frame = $state(0);
 	let frameOffsets: number[] = $state([]);
 	let animationX = $state(0);
+	let seaAnimationInterval: NodeJS.Timeout;
 
 	onMount(() => {
 		windowWidth = window.innerWidth;
@@ -36,18 +40,18 @@
 			frameOffsets.push(frameOffsets[0]);
 		});
 
-		const titleInterval = setInterval(() => {
+		titleInterval = setInterval(() => {
 			title += fullTitle[title.length];
 			if (title.length === fullTitle.length) {
 				clearInterval(titleInterval);
 			}
 		}, 100);
 
-		setInterval(() => {
+		cursorInterval = setInterval(() => {
 			blinkingCursor = blinkingCursor === '_' ? ' ' : '_';
 		}, 1000);
 
-		setInterval(() => {
+		seaAnimationInterval = setInterval(() => {
 			if (frame === data.frames.length - 1) {
 				frame = 0;
 			} else frame++;
@@ -61,6 +65,12 @@
 			Math.floor(Math.random() * 8)
 		);
 		frameOffsets.push(frameOffsets[0]);
+	});
+
+	beforeNavigate(() => {
+		clearInterval(titleInterval);
+		clearInterval(cursorInterval);
+		clearInterval(seaAnimationInterval);
 	});
 
 	function updateCursorPosition(e: MouseEvent) {
@@ -113,7 +123,7 @@
 	</header>
 
 	<section
-		class="flex flex-col items-center justify-center"
+		class="flex flex-col items-center justify-center relative"
 		style="transform: translate({(cursorX - windowWidth / 2) * 0.01}px, {(cursorY -
 			windowHeight / 2) *
 			0.01}px);"
@@ -234,7 +244,7 @@
 		top: 0;
 		margin: auto;
 		border-radius: 2rem;
-		box-shadow: 0 0 0 10rem vaR(--menu-bg);
+		box-shadow: 0 0 0 10rem var(--menu-bg);
 		pointer-events: none;
 	}
 </style>
