@@ -2,6 +2,14 @@ import { sql } from '$lib/db.server';
 import { fail } from '@sveltejs/kit';
 import 'dotenv/config';
 
+export async function load() {
+	const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24`;
+
+	return {
+		channels: channels
+	};
+}
+
 export const actions = {
 	submit: async ({ request }) => {
 		const formData = await request.formData();
@@ -14,6 +22,12 @@ export const actions = {
 		if (!formData.has('description'))
 			return fail(400, {
 				error: 'description is required'
+			});
+
+		const description = formData.get('description') as string;
+		if (!description || description.length < 10 || description.length > 150)
+			return fail(400, {
+				error: 'description must be between 10 and 150 characters'
 			});
 
 		let channel = formData.get('channel') as string;
@@ -75,18 +89,23 @@ export const actions = {
 			});
 			topicCategories.join(' ');
 
+			// score calculation
+			const score = 1 / Math.log(ytItem.statistics.subscriberCount + 2);
+
 			await sql`
-        INSERT INTO youtube (id, handle, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description) 
+        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description, score) 
         VALUES (
           ${ytItem.id}, 
           ${ytItem.snippet.customUrl.substring(1)}, 
+          ${ytItem.snippet.title}, 
           ${ytItem.snippet.description}, 
           ${ytItem.statistics.subscriberCount}, 
           ${ytItem.statistics.subscriberCount}, 
           ${ytItem.snippet.thumbnails.default.url}, 
           ${topicCategories}, 
-          ${ytItem.brandingSettings.channel.keywords}, 
-          ${formData.get('description') as string}
+          ${ytItem.brandingSettings.channel.keywords ?? null}, 
+          ${formData.get('description') as string},
+          ${score}
         ) 
         ON CONFLICT (id) DO NOTHING`;
 
