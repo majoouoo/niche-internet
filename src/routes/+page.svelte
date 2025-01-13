@@ -131,8 +131,9 @@
 		<div class="framing absolute z-20"></div>
 
 		<div class="px-4 pb-2 flex flex-col items-center justify-center">
-
-			<h2 class="text-center" style="color: var(--border-color);">discover unknown websites and creators</h2>
+			<h2 class="text-center" style="color: var(--border-color);">
+				discover unknown websites and creators
+			</h2>
 			<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
 			<div class="grid grid-cols-1 grid-rows-4 gap-2 md:grid-cols-2 md:grid-rows-2">
 				<a
@@ -180,7 +181,8 @@
 				{#each frameOffsets as offset}
 					<div
 						class="transform-wrapper"
-						style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+						style="transform: translateX({-259.2 * (frameOffsets.length - 1) +
+							animationX * 14.4}px);"
 					>
 						<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
 					</div>
@@ -188,13 +190,13 @@
 				{#each frameOffsets as offset}
 					<div
 						class="transform-wrapper"
-						style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+						style="transform: translateX({-259.2 * (frameOffsets.length - 1) +
+							animationX * 14.4}px);"
 					>
 						<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
 					</div>
 				{/each}
 			</div>
-
 		</div>
 	</section>
 </div>

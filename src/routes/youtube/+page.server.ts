@@ -89,11 +89,8 @@ export const actions = {
 			});
 			topicCategories.join(' ');
 
-			// score calculation
-			const score = 1 / Math.log(ytItem.statistics.subscriberCount + 2);
-
 			await sql`
-        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description, score) 
+        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description) 
         VALUES (
           ${ytItem.id}, 
           ${ytItem.snippet.customUrl.substring(1)}, 
@@ -104,8 +101,7 @@ export const actions = {
           ${ytItem.snippet.thumbnails.default.url}, 
           ${topicCategories}, 
           ${ytItem.brandingSettings.channel.keywords ?? null}, 
-          ${formData.get('description') as string},
-          ${score}
+          ${formData.get('description') as string}
         ) 
         ON CONFLICT (id) DO NOTHING`;
 
@@ -117,6 +113,50 @@ export const actions = {
 			console.error(error);
 			return fail(500, {
 				error: 'error submitting channel'
+			});
+		}
+	},
+	vote: async ({ request }) => {
+		const formData = await request.formData();
+
+		try {
+			if (!formData.has('id'))
+				return fail(400, {
+					error: 'id is required'
+				});
+
+			await sql`UPDATE youtube SET votes = votes + 1 WHERE id = ${formData.get('id') as string}`;
+
+			return {
+				status: 201,
+				message: 'vote counted successfully'
+			};
+		} catch (error) {
+			console.error(error);
+			return fail(500, {
+				error: 'error submitting vote'
+			});
+		}
+	},
+	report: async ({ request }) => {
+		const formData = await request.formData();
+
+		try {
+			if (!formData.has('id'))
+				return fail(400, {
+					error: 'id is required'
+				});
+
+			await sql`UPDATE youtube SET reports = reports + 1 WHERE id = ${formData.get('id') as string}`;
+
+			return {
+				status: 201,
+				message: 'report counted successfully'
+			};
+		} catch (error) {
+			console.error(error);
+			return fail(500, {
+				error: 'error submitting report'
 			});
 		}
 	}

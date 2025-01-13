@@ -21,9 +21,8 @@
 		<div class="framing absolute z-20"></div>
 
 		<div class="px-4 pb-2 flex flex-col items-center justify-center">
-
 			<h1 class="my-4">NICHE YOUTUBE</h1>
-			<form class="flex flex-col items-center gap-4" method="POST" action="?/submit">
+			<form class="submit-form flex flex-col items-center gap-4" method="POST" action="?/submit">
 				<input
 					type="text"
 					placeholder="channel link or @handle"
@@ -48,13 +47,13 @@
 			</form>
 
 			{#if form?.error}
-				<div class="flex gap-2 mt-4">
+				<div class="flex gap-2 mt-4 text-red-300">
 					<span class="material-symbols-outlined">error</span>
 					<p>{form.error}</p>
 				</div>
 			{/if}
 			{#if form?.message}
-				<div class="flex gap-2 mt-4">
+				<div class="flex gap-2 mt-4 text-green-300">
 					<span class="material-symbols-outlined">check_circle</span>
 					<p>{form.message}</p>
 				</div>
@@ -63,35 +62,53 @@
 			<section class="grid grid-cols-1 w-full gap-4 mt-8 lg:grid-cols-3">
 				{#each data.channels as channel, i}
 					<div class="channel rounded-lg p-2 grid gap-3">
-						<a href={'https://youtube.com/@' + channel.handle} target="_blank" class="row-span-full">
-							<img src={channel.profile_picture_url} alt={channel.title} class="rounded-sm w-24 aspect-square" />
+						<a
+							href={'https://youtube.com/@' + channel.handle}
+							target="_blank"
+							class="row-span-full"
+						>
+							<img
+								src={channel.profile_picture_url}
+								alt={channel.title}
+								class="rounded-sm w-24 aspect-square"
+							/>
 						</a>
 
 						<div class="channel-info grid gap-3">
 							<div>
 								<h2 class="font-bold">
-									<a href={'https://youtube.com/@' + channel.handle} target="_blank" class="decoration-wavy">{channel.title}</a>
+									<a
+										href={'https://youtube.com/@' + channel.handle}
+										target="_blank"
+										class="decoration-wavy">{channel.title}</a
+									>
 								</h2>
 								<p class="font-light">
 									{channel.subscribers.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} subs
 								</p>
 							</div>
-							<div class="flex flex-col">
-								<button class="vote-btn px-4 py-1 rounded-md"
-								onmouseenter={() => (isBtnHover = true)}
-								onmouseleave={() => (isBtnHover = false)}>vote</button>
-								<button class="underline"
-								onmouseenter={() => (isBtnHover = true)}
-								onmouseleave={() => (isBtnHover = false)}>report</button>
-							</div>
+							<form class="flex flex-col" method="POST">
+								<input type="hidden" name="id" value={channel.id} />
+								<button
+									class="vote-btn px-4 py-1 rounded-md"
+									onmouseenter={() => (isBtnHover = true)}
+									onmouseleave={() => (isBtnHover = false)}
+									formaction="?/vote">vote</button
+								>
+								<button
+									class="underline"
+									onmouseenter={() => (isBtnHover = true)}
+									onmouseleave={() => (isBtnHover = false)}
+									formaction="?/report">report</button
+								>
+							</form>
 							<p class="text-5xl">{channel.votes}</p>
 						</div>
-						
+
 						<p class="font-light">{channel.user_description}</p>
 					</div>
 				{/each}
 			</section>
-
 		</div>
 	</section>
 </div>
@@ -103,18 +120,20 @@
 
 	.bg {
 		transition: color 0.5s;
-		background: var(--youtube-gradient);
+		background: var(--menu-bg);
 		color: var(--text-color);
 		display: grid;
 		grid-template-rows: auto 1fr;
 	}
 
-	.submit-btn, .vote-btn {
+	.submit-btn,
+	.vote-btn {
 		border: 1px solid var(--border-color);
 		transition: border-color 0.5s;
 	}
 
-	.submit-btn:hover, .vote-btn:hover {
+	.submit-btn:hover,
+	.vote-btn:hover {
 		border-color: var(--text-color);
 	}
 
@@ -136,12 +155,12 @@
 		pointer-events: none;
 	}
 
-	form {
+	.submit-form {
 		min-width: 30vw;
 	}
 
-	form textarea,
-	form input {
+	.submit-form textarea,
+	.submit-form input {
 		background-color: transparent;
 		border-bottom: 1px solid var(--border-color);
 		width: 100%;
@@ -150,15 +169,15 @@
 			border-color 0.5s;
 	}
 
-	form textarea:focus,
-	form input:focus {
+	.submit-form textarea:focus,
+	.submit-form input:focus {
 		border-bottom: 1px solid var(--text-color);
 		outline: none;
 		width: min(calc(100vw - 4rem), 120%);
 	}
 
-	form textarea::placeholder,
-	form input::placeholder {
+	.submit-form textarea::placeholder,
+	.submit-form input::placeholder {
 		color: #ffffff90;
 	}
 
