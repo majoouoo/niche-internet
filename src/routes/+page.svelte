@@ -130,67 +130,71 @@
 	>
 		<div class="framing absolute z-20"></div>
 
-		<h2 style="color: var(--border-color);">discover unknown websites and creators</h2>
-		<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
-		<div class="grid grid-cols-2 grid-rows-2 gap-2">
-			<a
-				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				onmouseenter={() => (theme = 'web')}
-				onmouseleave={() => (theme = 'menu')}
-				style={theme === 'web' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-				href="/"
-			>
-				<h2>NICHE WEB</h2>
-			</a>
+		<div class="px-4 pb-2 flex flex-col items-center justify-center">
 
-			<a
-				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				onmouseenter={() => (theme = 'youtube')}
-				onmouseleave={() => (theme = 'menu')}
-				style={theme === 'youtube' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-				href="/youtube"
-			>
-				<h2>NICHE YOUTUBE</h2>
-			</a>
-
-			<a
-				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				onmouseenter={() => (theme = 'tiktok')}
-				onmouseleave={() => (theme = 'menu')}
-				style={theme === 'tiktok' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-				href="/"
-			>
-				<h2>NICHE TIKTOK</h2>
-			</a>
-
-			<a
-				class="card flex items-center justify-center px-8 py-3 rounded-lg"
-				onmouseenter={() => (theme = 'instagram')}
-				onmouseleave={() => (theme = 'menu')}
-				style={theme === 'instagram' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-				href="/"
-			>
-				<h2>NICHE INSTAGRAM</h2>
-			</a>
-		</div>
-
-		<div class="flex absolute w-screen bottom-3 left-0 z-10 text-2xl overflow-hidden">
-			{#each frameOffsets as offset}
-				<div
-					class="transform-wrapper"
-					style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+			<h2 class="text-center" style="color: var(--border-color);">discover unknown websites and creators</h2>
+			<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
+			<div class="grid grid-cols-1 grid-rows-4 gap-2 md:grid-cols-2 md:grid-rows-2">
+				<a
+					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					onmouseenter={() => (theme = 'web')}
+					onmouseleave={() => (theme = 'menu')}
+					style={theme === 'web' || theme === 'menu' ? 'color: var(--text-color);' : ''}
+					href="/"
 				>
-					<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
-				</div>
-			{/each}
-			{#each frameOffsets as offset}
-				<div
-					class="transform-wrapper"
-					style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+					<h2>NICHE WEB</h2>
+				</a>
+
+				<a
+					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					onmouseenter={() => (theme = 'youtube')}
+					onmouseleave={() => (theme = 'menu')}
+					style={theme === 'youtube' || theme === 'menu' ? 'color: var(--text-color);' : ''}
+					href="/youtube"
 				>
-					<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
-				</div>
-			{/each}
+					<h2>NICHE YOUTUBE</h2>
+				</a>
+
+				<a
+					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					onmouseenter={() => (theme = 'tiktok')}
+					onmouseleave={() => (theme = 'menu')}
+					style={theme === 'tiktok' || theme === 'menu' ? 'color: var(--text-color);' : ''}
+					href="/"
+				>
+					<h2>NICHE TIKTOK</h2>
+				</a>
+
+				<a
+					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					onmouseenter={() => (theme = 'instagram')}
+					onmouseleave={() => (theme = 'menu')}
+					style={theme === 'instagram' || theme === 'menu' ? 'color: var(--text-color);' : ''}
+					href="/"
+				>
+					<h2>NICHE INSTAGRAM</h2>
+				</a>
+			</div>
+
+			<div class="flex absolute w-screen bottom-3 left-0 z-10 text-2xl overflow-hidden">
+				{#each frameOffsets as offset}
+					<div
+						class="transform-wrapper"
+						style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+					>
+						<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+					</div>
+				{/each}
+				{#each frameOffsets as offset}
+					<div
+						class="transform-wrapper"
+						style="transform: translateX({-259.2 * (frameOffsets.length - 1) + animationX * 14.4}px);"
+					>
+						<p class="sea-animation">{data.frames[(frame + offset) % data.frames.length]}</p>
+					</div>
+				{/each}
+			</div>
+
 		</div>
 	</section>
 </div>
