@@ -192,5 +192,40 @@ export const actions = {
 				error: 'error submitting report'
 			});
 		}
+	},
+	search: async ({ request }) => {
+		const formData = await request.formData();
+
+		if (!formData.has('query'))
+			return fail(400, {
+				error: 'query is required'
+			});
+
+		let query = formData.get('query') as string;
+		query = `%${query}%`;
+
+		try {
+			const channels = await sql`
+				SELECT * 
+				FROM youtube 
+				WHERE title ILIKE ${query} 
+				OR handle ILIKE ${query} 
+				OR topic_categories ILIKE ${query} 
+				OR keywords ILIKE ${query} 
+				OR channel_description ILIKE ${query} 
+				OR user_description ILIKE ${query} 
+				ORDER BY score DESC
+				LIMIT 24
+			`;
+
+			return {
+				channels: channels
+			};
+		} catch (error) {
+			console.error(error);
+			return fail(500, {
+				error: 'error searching channels'
+			});
+		}
 	}
 };

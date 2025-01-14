@@ -1,5 +1,10 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	let { data, form } = $props();
+
+	let channels = form?.channels ? form.channels : data.channels;
+
+	let searchQuery: string = $state('');
 
 	let isBtnHover: boolean = $state(false);
 </script>
@@ -13,8 +18,24 @@
 	class="bg min-h-screen"
 	style={isBtnHover ? 'color: var(--border-color);' : 'color: var(--text-color);'}
 >
-	<header class="p-3 z-30">
+	<header
+		class="p-3 z-30 flex flex-col justify-between items-center gap-4 md:flex-row md:items-start"
+	>
 		<a href="/">back to menu</a>
+		<form class="search-form" method="POST" action="?/search">
+			<input
+				type="search"
+				name="query"
+				placeholder="search for channels..."
+				bind:value={searchQuery}
+			/>
+			<button
+				class="submit-btn px-2 py-1 rounded-md"
+				onmouseenter={() => (isBtnHover = true)}
+				onmouseleave={() => (isBtnHover = false)}
+				>{searchQuery || !page.url.href.includes('search') ? 'search' : 'show all'}</button
+			>
+		</form>
 	</header>
 
 	<section class="flex flex-col items-center justify-center relative">
@@ -59,8 +80,8 @@
 				</div>
 			{/if}
 
-			<section class="grid grid-cols-1 w-full gap-4 mt-24 px-8 lg:grid-cols-3">
-				{#each data.channels as channel, i}
+			<section class="grid grid-cols-1 w-full gap-4 mt-24 lg:grid-cols-3">
+				{#each channels as channel, i}
 					<div class="channel rounded-lg p-2 grid gap-3">
 						<a
 							href={'https://youtube.com/@' + channel.handle}
@@ -188,7 +209,8 @@
 	}
 
 	.submit-form textarea::placeholder,
-	.submit-form input::placeholder {
+	.submit-form input::placeholder,
+	.search-form input::placeholder {
 		color: #ffffff90;
 	}
 
@@ -200,5 +222,16 @@
 
 	.channel-info {
 		grid-template-columns: 1fr auto auto;
+	}
+
+	.search-form input {
+		background-color: transparent;
+		border-bottom: 1px solid var(--border-color);
+		transition: border-color 0.5s;
+	}
+
+	.search-form input:focus {
+		border-bottom: 1px solid var(--text-color);
+		outline: none;
 	}
 </style>
