@@ -130,10 +130,8 @@
 	>
 		<div class="framing absolute z-20"></div>
 
-		<div class="px-4 pb-2 flex flex-col items-center justify-center">
-			<h2 class="text-center" style="color: var(--border-color);">
-				discover unknown websites and creators
-			</h2>
+		<div class="px-4 pb-4 flex flex-col items-center justify-center">
+			<h2 class="text-center" style="color: #ffffff60;">discover unknown websites and creators</h2>
 			<h1 class="title mb-4 whitespace-pre">{title}{blinkingCursor}</h1>
 			<div class="grid grid-cols-1 grid-rows-4 gap-2 md:grid-cols-2 md:grid-rows-2">
 				<a
@@ -141,9 +139,9 @@
 					onmouseenter={() => (theme = 'web')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'web' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-					href="/"
+					href="/#"
 				>
-					<h2>NICHE WEB</h2>
+					<h2>NICHE WEB <sup>soon</sup></h2>
 				</a>
 
 				<a
@@ -161,9 +159,9 @@
 					onmouseenter={() => (theme = 'tiktok')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'tiktok' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-					href="/"
+					href="/#"
 				>
-					<h2>NICHE TIKTOK</h2>
+					<h2>NICHE TIKTOK <sup>soon</sup></h2>
 				</a>
 
 				<a
@@ -171,9 +169,9 @@
 					onmouseenter={() => (theme = 'instagram')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'instagram' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-					href="/"
+					href="/#"
 				>
-					<h2>NICHE INSTAGRAM</h2>
+					<h2>NICHE INSTAGRAM <sup>soon</sup></h2>
 				</a>
 			</div>
 

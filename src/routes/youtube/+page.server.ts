@@ -11,41 +11,42 @@ export async function load() {
 }
 
 export const actions = {
-	submit: async ({ request }) => {
+	submit: async (event) => {
+		const request = event.request;
 		const formData = await request.formData();
+		const clientIpAddress = event.getClientAddress();
 
-		if (!formData.has('channel'))
+		if (!formData.has('channel') || !formData.has('description'))
 			return fail(400, {
-				error: 'channel is required'
+				error: 'channel and description are required'
 			});
 
-		if (!formData.has('description'))
-			return fail(400, {
-				error: 'description is required'
-			});
+		let channel = formData.get('channel') as string;
+		let description = formData.get('description') as string;
 
-		const description = formData.get('description') as string;
 		if (!description || description.length < 10 || description.length > 150)
 			return fail(400, {
 				error: 'description must be between 10 and 150 characters'
 			});
 
-		let channel = formData.get('channel') as string;
+		// extract handle or id from url
 		let handle = null;
 		let id = null;
 
-		if (channel[channel.length - 1] === '/') {
+		if (channel[-1] === '/') {
 			channel = channel.substring(0, channel.length - 1);
 		}
 
 		if (channel.includes('youtube.com/channel/')) {
-			id = channel.substring(channel.lastIndexOf('/') + 1);
+			id = channel.substring(
+				channel.indexOf('youtube.com/channel/') + 'youtube.com/channel/'.length
+			);
 		} else if (channel.includes('youtube.com/user/')) {
-			handle = channel.substring(channel.lastIndexOf('/') + 1);
+			handle = channel.substring(channel.indexOf('youtube.com/user/') + 'youtube.com/user/'.length);
 		} else if (channel.includes('youtube.com/c/')) {
-			handle = channel.substring(channel.lastIndexOf('/') + 1);
+			handle = channel.substring(channel.indexOf('youtube.com/c/') + 'youtube.com/c/'.length);
 		} else if (channel.includes('youtube.com/')) {
-			handle = channel.substring(channel.lastIndexOf('/') + 1);
+			handle = channel.substring(channel.indexOf('youtube.com/') + 'youtube.com/'.length);
 		} else {
 			handle = channel;
 		}
@@ -54,6 +55,23 @@ export const actions = {
 			handle = handle.substring(1);
 		}
 
+		// sanitize handle/id and description inputs
+		const unsanitizedHandle = handle;
+		const unsanitizedId = id;
+		handle = handle ? handle.replace(/[&#?{}[\]$/\\'" ]/g, '') : null;
+		id = id ? id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
+		description = description.replace(/[^a-zA-Z0-9-_.,:;() ]/g, '');
+
+		if (
+			handle !== unsanitizedHandle ||
+			id !== unsanitizedId ||
+			description !== formData.get('description')
+		)
+			return fail(400, {
+				error: 'invalid characters in channel or description'
+			});
+
+		// check if channel is in db
 		let sqlExistsCheck = null;
 		if (handle) {
 			sqlExistsCheck = await sql`SELECT * FROM youtube WHERE handle ILIKE ${handle}`;
@@ -64,6 +82,20 @@ export const actions = {
 		if (sqlExistsCheck?.length !== 0) {
 			return fail(409, {
 				error: 'channel is already submitted, vote for it instead'
+			});
+		}
+
+		// check if limit per ip is reached
+		const recentSubmissions = await sql`
+			SELECT COUNT(*) 
+			FROM youtube 
+			WHERE ip_address = ${clientIpAddress} 
+			AND submitted_on = CURRENT_DATE
+		`;
+
+		if (recentSubmissions[0].count >= 5) {
+			return fail(429, {
+				error: 'limit reached for this ip address, try again tomorrow'
 			});
 		}
 
@@ -90,7 +122,7 @@ export const actions = {
 			topicCategories.join(' ');
 
 			await sql`
-        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description) 
+        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description, ip_address) 
         VALUES (
           ${ytItem.id}, 
           ${ytItem.snippet.customUrl.substring(1)}, 
@@ -101,7 +133,8 @@ export const actions = {
           ${ytItem.snippet.thumbnails.default.url}, 
           ${topicCategories}, 
           ${ytItem.brandingSettings.channel.keywords ?? null}, 
-          ${formData.get('description') as string}
+          ${formData.get('description') as string}, 
+					${clientIpAddress}
         ) 
         ON CONFLICT (id) DO NOTHING`;
 
@@ -151,7 +184,7 @@ export const actions = {
 
 			return {
 				status: 201,
-				message: 'report counted successfully'
+				message: 'report submitted successfully'
 			};
 		} catch (error) {
 			console.error(error);

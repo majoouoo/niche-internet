@@ -24,7 +24,7 @@
 	--instagram-gradient: linear-gradient(55deg, var(--instagram-bg), var(--instagram-bg-2));
 
 	--text-color: #ffffffbb;
-	--border-color: #ffffff50;
+	--border-color: #ffffff30;
 }
 
 body {
@@ -41,7 +41,7 @@ p {
 
 a {
 	text-decoration: underline;
-	transition: color 0.3s;
+	transition: color 0.5s;
 }
 
 a:hover {

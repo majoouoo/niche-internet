@@ -18,9 +18,9 @@
 	</header>
 
 	<section class="flex flex-col items-center justify-center relative">
-		<div class="framing absolute z-20"></div>
+		<!-- <div class="framing absolute z-20"></div> -->
 
-		<div class="px-4 pb-2 flex flex-col items-center justify-center">
+		<div class="px-4 pb-4 flex flex-col items-center justify-center">
 			<h1 class="my-4">NICHE YOUTUBE</h1>
 			<form class="submit-form flex flex-col items-center gap-4" method="POST" action="?/submit">
 				<input
@@ -59,7 +59,7 @@
 				</div>
 			{/if}
 
-			<section class="grid grid-cols-1 w-full gap-4 mt-8 lg:grid-cols-3">
+			<section class="grid grid-cols-1 w-full gap-4 mt-24 px-8 lg:grid-cols-3">
 				{#each data.channels as channel, i}
 					<div class="channel rounded-lg p-2 grid gap-3">
 						<a
@@ -76,18 +76,29 @@
 
 						<div class="channel-info grid gap-3">
 							<div>
-								<h2 class="font-bold">
-									<a
-										href={'https://youtube.com/@' + channel.handle}
-										target="_blank"
-										class="decoration-wavy">{channel.title}</a
+								<h2
+									class="font-bold"
+									class:text-red-300={channel.reports >= 4 && !isBtnHover}
+									style="transition: color 0.5s;"
+								>
+									<a href={'https://youtube.com/@' + channel.handle} target="_blank"
+										>{channel.title}</a
 									>
 								</h2>
 								<p class="font-light">
 									{channel.subscribers.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} subs
 								</p>
+								{#if channel.reports >= 4}
+									<p
+										class="font-light"
+										class:text-red-300={!isBtnHover}
+										style="transition: color 0.5s;"
+									>
+										{channel.reports} reports
+									</p>
+								{/if}
 							</div>
-							<form class="flex flex-col" method="POST">
+							<form class="flex flex-col gap-0.5" method="POST">
 								<input type="hidden" name="id" value={channel.id} />
 								<button
 									class="vote-btn px-4 py-1 rounded-md"
@@ -114,9 +125,9 @@
 </div>
 
 <style lang="postcss">
-	.w-full {
+	/* .w-full {
 		width: calc(100% - 2rem);
-	}
+	} */
 
 	.bg {
 		transition: color 0.5s;
@@ -145,7 +156,7 @@
 		background-color: var(--menu-bg);
 	}
 
-	.framing {
+	/* .framing {
 		height: calc(100% - 1rem);
 		width: calc(100% - 2rem);
 		top: 0;
@@ -153,7 +164,7 @@
 		border-radius: 2rem;
 		box-shadow: 0 0 0 10rem var(--menu-bg);
 		pointer-events: none;
-	}
+	} */
 
 	.submit-form {
 		min-width: 30vw;
