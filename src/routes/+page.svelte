@@ -80,7 +80,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>home | niche internet</title>
 	<meta name="description" content="" />
 </svelte:head>
 

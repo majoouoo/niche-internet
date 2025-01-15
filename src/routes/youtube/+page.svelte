@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>YouTube</title>
+	<title>youtube | niche internet</title>
 	<meta name="description" content="" />
 </svelte:head>
 
