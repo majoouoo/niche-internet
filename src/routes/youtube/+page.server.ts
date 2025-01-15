@@ -149,8 +149,15 @@ export const actions = {
 			});
 		}
 	},
-	vote: async ({ request }) => {
+	vote: async ({ request, cookies }) => {
 		const formData = await request.formData();
+
+		let votedFor = cookies.get('votedFor');
+
+		if (votedFor && votedFor.includes(formData.get('id') as string))
+			return fail(409, {
+				error: 'already voted for this channel'
+			});
 
 		try {
 			if (!formData.has('id'))
@@ -159,6 +166,14 @@ export const actions = {
 				});
 
 			await sql`UPDATE youtube SET votes = votes + 1 WHERE id = ${formData.get('id') as string}`;
+
+			if (votedFor) {
+				votedFor += `|${formData.get('id')}`;
+			} else {
+				votedFor = formData.get('id') as string;
+			}
+
+			cookies.set('votedFor', votedFor, { path: "/"});
 
 			return {
 				status: 201,
@@ -171,8 +186,15 @@ export const actions = {
 			});
 		}
 	},
-	report: async ({ request }) => {
+	report: async ({ request, cookies }) => {
 		const formData = await request.formData();
+
+		let reported = cookies.get('reported');
+
+		if (reported && reported.includes(formData.get('id') as string))
+			return fail(409, {
+				error: 'already reported this channel'
+			});
 
 		try {
 			if (!formData.has('id'))
@@ -181,6 +203,14 @@ export const actions = {
 				});
 
 			await sql`UPDATE youtube SET reports = reports + 1 WHERE id = ${formData.get('id') as string}`;
+
+			if (reported) {
+				reported += `|${formData.get('id')}`;
+			} else {
+				reported = formData.get('id') as string;
+			}
+
+			cookies.set('reported', reported, { path: "/"});
 
 			return {
 				status: 201,
