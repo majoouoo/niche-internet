@@ -1,8 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { enhance } from '$app/forms';
 	let { data, form } = $props();
 
-	let channels = form?.channels ? form.channels : data.channels;
+	let channels: any[] = $state([]);
+	$effect(() => {
+		if (form?.searchResults) {
+			channels = form.searchResults;
+		} else if (data.channels) {
+			channels = data.channels;
+		}
+
+		if (form?.moreChannels) {
+			channels = [...channels, ...form.moreChannels];
+		}
+	});
 
 	let searchQuery: string = $state('');
 
@@ -22,7 +34,7 @@
 		class="p-3 z-30 flex flex-col justify-between items-center gap-4 md:flex-row md:items-start"
 	>
 		<a href="/">back to menu</a>
-		<form class="search-form" method="POST" action="?/search">
+		<form class="search-form" method="POST" action="?/search" use:enhance>
 			<input
 				type="search"
 				name="query"
@@ -43,7 +55,7 @@
 
 		<div class="px-4 pb-4 flex flex-col items-center justify-center">
 			<h1 class="my-4">NICHE YOUTUBE</h1>
-			<form class="submit-form flex flex-col items-center gap-4" method="POST" action="?/submit">
+			<form class="submit-form flex flex-col items-center gap-4" method="POST" action="?/submit" use:enhance>
 				<input
 					type="text"
 					placeholder="channel link or @handle"
@@ -78,6 +90,9 @@
 					<span class="material-symbols-outlined">check_circle</span>
 					<p>{form.message}</p>
 				</div>
+			{/if}
+			{#if channels.length === 0}
+				<p class="text-center mt-4">no channels found</p>
 			{/if}
 
 			<section class="grid grid-cols-1 w-full gap-4 mt-24 lg:grid-cols-3">
@@ -119,7 +134,7 @@
 									</p>
 								{/if}
 							</div>
-							<form class="flex flex-col gap-0.5" method="POST">
+							<form class="flex flex-col gap-0.5" method="POST" use:enhance>
 								<input type="hidden" name="id" value={channel.id} />
 								<button
 									class="vote-btn px-4 py-1 rounded-md"
@@ -141,6 +156,15 @@
 					</div>
 				{/each}
 			</section>
+
+			{#if channels.length !== 0 && channels.length % 24 === 0}
+				<form class="flex justify-center mt-4" method="POST" action="?/load" use:enhance>
+					<input type="hidden" name="offset" value={channels.length} />
+					<button
+						class="underline">load more</button
+					>
+				</form>
+			{/if}
 		</div>
 	</section>
 </div>

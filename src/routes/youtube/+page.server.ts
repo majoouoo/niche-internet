@@ -3,11 +3,18 @@ import { fail } from '@sveltejs/kit';
 import 'dotenv/config';
 
 export async function load() {
-	const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24`;
+	try {
+		const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24`;
 
-	return {
-		channels: channels
-	};
+		return {
+			channels: channels
+		};
+	} catch (error) {
+		console.error(error);
+		return fail(500, {
+			error: 'error loading channels'
+		});
+	}
 }
 
 export const actions = {
@@ -60,7 +67,7 @@ export const actions = {
 		const unsanitizedId = id;
 		handle = handle ? handle.replace(/[&#?{}[\]$/\\'" ]/g, '') : null;
 		id = id ? id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
-		description = description.replace(/[^a-zA-Z0-9-_.,:;() ]/g, '');
+		description = description.replace(/[^a-zA-Z0-9-_.,:;() \r\n]/g, '');
 
 		if (
 			handle !== unsanitizedHandle ||
@@ -249,12 +256,35 @@ export const actions = {
 			`;
 
 			return {
-				channels: channels
+				searchResults: channels
 			};
 		} catch (error) {
 			console.error(error);
 			return fail(500, {
 				error: 'error searching channels'
+			});
+		}
+	},
+	load: async ({ request }) => {
+		const formData = await request.formData();
+
+		if (!formData.has('offset'))
+			return fail(400, {
+				error: 'error loading more'
+			});
+
+		const offset = Number(formData.get('offset'));
+
+		try {
+			const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24 OFFSET ${offset}`;
+
+			return {
+				moreChannels: channels
+			};
+		} catch (error) {
+			console.error(error);
+			return fail(500, {
+				error: 'error loading more'
 			});
 		}
 	}

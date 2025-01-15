@@ -114,12 +114,10 @@
 	style={theme === 'menu' ? 'color: var(--text-color);' : 'color: var(--border-color);'}
 	onmousemove={(e) => updateCursorPosition(e)}
 >
-	<header class="p-3 flex justify-between z-30">
-		<div>
-			<a href="/">faq</a>
-			<a href="/">about</a>
-		</div>
-		<a href="/">github</a>
+	<header class="px-4 py-2 grid grid-cols-3 z-30 items-center">
+		<a class="jusitfy-self-start" href="/">about</a>
+		<img src="/icon.png" alt="" class="h-8 justify-self-center" />
+		<a class="justify-self-end" href="/">github</a>
 	</header>
 
 	<section
