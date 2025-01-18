@@ -4,7 +4,7 @@ import 'dotenv/config';
 
 export async function load() {
 	try {
-		const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24`;
+		const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 30`;
 
 		return {
 			channels: channels
@@ -180,7 +180,7 @@ export const actions = {
 				votedFor = formData.get('id') as string;
 			}
 
-			cookies.set('votedFor', votedFor, { path: "/"});
+			cookies.set('votedFor', votedFor, { path: '/' });
 
 			return {
 				status: 201,
@@ -217,7 +217,7 @@ export const actions = {
 				reported = formData.get('id') as string;
 			}
 
-			cookies.set('reported', reported, { path: "/"});
+			cookies.set('reported', reported, { path: '/' });
 
 			return {
 				status: 201,
@@ -238,22 +238,34 @@ export const actions = {
 				error: 'query is required'
 			});
 
-		let query = formData.get('query') as string;
-		query = `%${query}%`;
+		const query =
+			formData.has('query') && formData.get('query') !== ''
+				? `%${formData.get('query') as string}%`
+				: null;
 
 		try {
-			const channels = await sql`
-				SELECT * 
-				FROM youtube 
-				WHERE title ILIKE ${query} 
-				OR handle ILIKE ${query} 
-				OR topic_categories ILIKE ${query} 
-				OR keywords ILIKE ${query} 
-				OR channel_description ILIKE ${query} 
-				OR user_description ILIKE ${query} 
-				ORDER BY score DESC
-				LIMIT 24
-			`;
+			let channels;
+			if (query) {
+				channels = await sql`
+					SELECT * 
+					FROM youtube 
+					WHERE title ILIKE ${query} 
+					OR handle ILIKE ${query} 
+					OR topic_categories ILIKE ${query} 
+					OR keywords ILIKE ${query} 
+					OR channel_description ILIKE ${query} 
+					OR user_description ILIKE ${query} 
+					ORDER BY score DESC
+					LIMIT 30
+				`;
+			} else {
+				channels = await sql`
+					SELECT * 
+					FROM youtube 
+					ORDER BY score DESC 
+					LIMIT 30
+				`;
+			}
 
 			return {
 				searchResults: channels
@@ -274,9 +286,36 @@ export const actions = {
 			});
 
 		const offset = Number(formData.get('offset'));
+		const query =
+			formData.has('query') && formData.get('query') !== ''
+				? `%${formData.get('query') as string}%`
+				: null;
 
 		try {
-			const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 24 OFFSET ${offset}`;
+			let channels;
+			if (query) {
+				channels = await sql`
+					SELECT * 
+					FROM youtube 
+					WHERE title ILIKE ${query} 
+					OR handle ILIKE ${query} 
+					OR topic_categories ILIKE ${query} 
+					OR keywords ILIKE ${query} 
+					OR channel_description ILIKE ${query} 
+					OR user_description ILIKE ${query} 
+					ORDER BY score DESC
+					LIMIT 30 
+					OFFSET ${offset}
+				`;
+			} else {
+				channels = await sql`
+					SELECT * 
+					FROM youtube 
+					ORDER BY score DESC 
+					LIMIT 30 
+					OFFSET ${offset}
+				`;
+			}
 
 			return {
 				moreChannels: channels

@@ -1,22 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { enhance } from '$app/forms';
+	import { enhance, applyAction } from '$app/forms';
 	let { data, form } = $props();
 
-	let channels: any[] = $state([]);
-	$effect(() => {
-		if (form?.searchResults) {
-			channels = form.searchResults;
-		} else if (data.channels) {
-			channels = data.channels;
-		}
+	let channels: any[] = $state(data.channels ?? []);
 
-		if (form?.moreChannels) {
-			channels = [...channels, ...form.moreChannels];
-		}
-	});
-
-	let searchQuery: string = $state('');
+	let searchQuery = $state('');
 
 	let isBtnHover: boolean = $state(false);
 </script>
@@ -34,18 +23,30 @@
 		class="p-3 z-30 flex flex-col justify-between items-center gap-4 md:flex-row md:items-start"
 	>
 		<a href="/">back to menu</a>
-		<form class="search-form" method="POST" action="?/search" use:enhance>
+		<form
+			class="search-form"
+			method="POST"
+			action="?/search"
+			use:enhance={({ formElement, formData }) => {
+				return async ({ result }) => {
+					await applyAction(result);
+					if (result?.type === 'success') {
+						searchQuery = formData.get('query') as string;
+					}
+					formElement.reset();
+					channels = form?.searchResults ?? [];
+				};
+			}}
+		>
 			<input
 				type="search"
 				name="query"
-				placeholder="search for channels..."
-				bind:value={searchQuery}
+				placeholder={searchQuery ? searchQuery : 'search for channels...'}
 			/>
 			<button
 				class="submit-btn px-2 py-1 rounded-md"
 				onmouseenter={() => (isBtnHover = true)}
-				onmouseleave={() => (isBtnHover = false)}
-				>{searchQuery || !page.url.href.includes('search') ? 'search' : 'show all'}</button
+				onmouseleave={() => (isBtnHover = false)}>{searchQuery ? 'show all' : 'search'}</button
 			>
 		</form>
 	</header>
@@ -55,7 +56,12 @@
 
 		<div class="px-4 pb-4 flex flex-col items-center justify-center">
 			<h1 class="my-4">NICHE YOUTUBE</h1>
-			<form class="submit-form flex flex-col items-center gap-4" method="POST" action="?/submit" use:enhance>
+			<form
+				class="submit-form flex flex-col items-center gap-4"
+				method="POST"
+				action="?/submit"
+				use:enhance
+			>
 				<input
 					type="text"
 					placeholder="channel link or @handle"
@@ -157,12 +163,23 @@
 				{/each}
 			</section>
 
-			{#if channels.length !== 0 && channels.length % 24 === 0}
-				<form class="flex justify-center mt-4" method="POST" action="?/load" use:enhance>
+			{#if channels.length % 30 === 0 && channels.length > 0 && form?.moreChannels?.length !== 0}
+				<form
+					class="flex justify-center mt-4"
+					method="POST"
+					action="?/load"
+					use:enhance={() => {
+						return async ({ result }) => {
+							await applyAction(result);
+							if (result?.type === 'success') {
+								channels = [...channels, ...(form?.moreChannels ?? [])];
+							}
+						};
+					}}
+				>
 					<input type="hidden" name="offset" value={channels.length} />
-					<button
-						class="underline">load more</button
-					>
+					<input type="hidden" name="query" value={searchQuery} />
+					<button class="underline">load more</button>
 				</form>
 			{/if}
 		</div>
