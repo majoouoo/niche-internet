@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { enhance, applyAction } from '$app/forms';
+	import { fly, fade } from 'svelte/transition';
 	let { data, form } = $props();
 
 	let channels: any[] = $state(data.channels ?? []);
@@ -8,6 +8,10 @@
 	let searchQuery = $state('');
 
 	let isBtnHover: boolean = $state(false);
+	let isSubmitLoading: boolean = $state(false);
+	let isSearchLoading: boolean = $state(false);
+
+	const placeholderImage = '/placeholder.png';
 </script>
 
 <svelte:head>
@@ -16,7 +20,7 @@
 </svelte:head>
 
 <div
-	class="bg min-h-screen"
+	class="bg min-h-screen pb-16"
 	style={isBtnHover ? 'color: var(--border-color);' : 'color: var(--text-color);'}
 >
 	<header
@@ -28,7 +32,9 @@
 			method="POST"
 			action="?/search"
 			use:enhance={({ formElement, formData }) => {
+				isSearchLoading = true;
 				return async ({ result }) => {
+					isSearchLoading = false;
 					await applyAction(result);
 					if (result?.type === 'success') {
 						searchQuery = formData.get('query') as string;
@@ -44,9 +50,15 @@
 				placeholder={searchQuery ? searchQuery : 'search for channels...'}
 			/>
 			<button
-				class="submit-btn px-2 py-1 rounded-md"
+				class="submit-btn px-2 py-1 rounded-md relative"
 				onmouseenter={() => (isBtnHover = true)}
-				onmouseleave={() => (isBtnHover = false)}>{searchQuery ? 'show all' : 'search'}</button
+				onmouseleave={() => (isBtnHover = false)}
+				disabled={isSearchLoading}>
+					<span style={isSearchLoading ? "opacity: 0;" : "opacity: 1;"}>{searchQuery ? 'show all' : 'search'}</span>
+					{#if isSearchLoading}
+						<div class="spinner"></div>
+					{/if}
+				</button
 			>
 		</form>
 	</header>
@@ -54,13 +66,21 @@
 	<section class="flex flex-col items-center justify-center relative">
 		<!-- <div class="framing absolute z-20"></div> -->
 
-		<div class="px-4 pb-4 flex flex-col items-center justify-center">
-			<h1 class="my-4">NICHE YOUTUBE</h1>
+		<div class="px-4 pb-4 flex flex-col w-full items-center justify-center">
+			<h1 class="my-4">NICHE
+				<span class="gradient-heading">YOUTUBE</span>
+			</h1>
 			<form
 				class="submit-form flex flex-col items-center gap-4"
 				method="POST"
 				action="?/submit"
-				use:enhance
+				use:enhance={() => {
+					isSubmitLoading = true
+					return async ({ result }) => {
+						isSubmitLoading = false
+						applyAction(result)
+					}
+				}}
 			>
 				<input
 					type="text"
@@ -79,20 +99,26 @@
 					maxlength="150"
 				></textarea>
 				<button
-					class="submit-btn flex items-center justify-center px-8 py-3 rounded-lg"
+					class="submit-btn flex items-center justify-center px-8 py-3 rounded-lg relative"
 					onmouseenter={() => (isBtnHover = true)}
-					onmouseleave={() => (isBtnHover = false)}>submit a channel</button
+					onmouseleave={() => (isBtnHover = false)}
+					disabled={isSubmitLoading}>
+						<span style={isSubmitLoading ? "opacity: 0;" : "opacity: 1;"}>submit a channel</span>
+						{#if isSubmitLoading}
+							<div class="spinner"></div>
+						{/if}
+					</button
 				>
 			</form>
 
 			{#if form?.error}
-				<div class="flex gap-2 mt-4 text-red-300">
+				<div class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }} out:fade>
 					<span class="material-symbols-outlined">error</span>
 					<p>{form.error}</p>
 				</div>
 			{/if}
 			{#if form?.message}
-				<div class="flex gap-2 mt-4 text-green-300">
+				<div class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }} out:fade>
 					<span class="material-symbols-outlined">check_circle</span>
 					<p>{form.message}</p>
 				</div>
@@ -103,7 +129,7 @@
 
 			<section class="grid grid-cols-1 w-full gap-4 mt-24 lg:grid-cols-3">
 				{#each channels as channel, i}
-					<div class="channel rounded-lg p-2 grid gap-3">
+					<div class="channel rounded-lg p-2 grid gap-3 overflow-x-hidden">
 						<a
 							href={'https://youtube.com/@' + channel.handle}
 							target="_blank"
@@ -113,6 +139,10 @@
 								src={channel.profile_picture_url}
 								alt={channel.title}
 								class="rounded-sm w-24 aspect-square"
+								onerror={(e) => { 
+									const target = e.target as HTMLImageElement; 
+									if (target) target.src = placeholderImage; 
+								}}
 							/>
 						</a>
 
@@ -140,25 +170,44 @@
 									</p>
 								{/if}
 							</div>
-							<form class="flex flex-col gap-0.5" method="POST" use:enhance>
+							<form class="flex flex-col gap-0.5 relative" method="POST" use:enhance={({ action }) => {
+								channel.isLoading = true
+								return async ({ result }) => {
+									channel.isLoading = false
+									await applyAction(result)
+									if (result.type === "success") {
+										// increment votes or reports by 1
+										channel[action.search.substring(2) + "s"] += 1
+									}
+								}
+								}
+							}>
 								<input type="hidden" name="id" value={channel.id} />
-								<button
-									class="vote-btn px-4 py-1 rounded-md"
-									onmouseenter={() => (isBtnHover = true)}
-									onmouseleave={() => (isBtnHover = false)}
-									formaction="?/vote">vote</button
-								>
-								<button
-									class="underline"
-									onmouseenter={() => (isBtnHover = true)}
-									onmouseleave={() => (isBtnHover = false)}
-									formaction="?/report">report</button
-								>
+								<div class="relative flex flex-col gap-0.5" style={channel.isLoading ? "opacity: 0;" : "opacity: 1;"}>
+									<button
+										class="vote-btn px-4 py-1 rounded-md"
+										onmouseenter={() => (isBtnHover = true)}
+										onmouseleave={() => (isBtnHover = false)}
+										formaction="?/vote">vote
+										</button
+									>
+									<button
+										class="underline"
+										onmouseenter={() => (isBtnHover = true)}
+										onmouseleave={() => (isBtnHover = false)}
+										formaction="?/report">report
+										</button
+									>
+								</div>
+								{#if channel.isLoading}
+									<div class="spinner"></div>
+								{/if}
+								
 							</form>
 							<p class="text-5xl">{channel.votes}</p>
 						</div>
 
-						<p class="font-light">{channel.user_description}</p>
+						<p class="font-light" style="overflow-wrap: anywhere;">{channel.user_description}</p>
 					</div>
 				{/each}
 			</section>
@@ -169,7 +218,9 @@
 					method="POST"
 					action="?/load"
 					use:enhance={() => {
+						isSubmitLoading = true;
 						return async ({ result }) => {
+							isSubmitLoading = false;
 							await applyAction(result);
 							if (result?.type === 'success') {
 								channels = [...channels, ...(form?.moreChannels ?? [])];
@@ -179,7 +230,12 @@
 				>
 					<input type="hidden" name="offset" value={channels.length} />
 					<input type="hidden" name="query" value={searchQuery} />
-					<button class="underline">load more</button>
+					<button class="underline relative" disabled={isSubmitLoading}>
+						<span style={isSubmitLoading ? "opacity: 0;" : "opacity: 1;"}>load more...</span>
+						{#if isSubmitLoading}
+							<div class="spinner"></div>
+						{/if}
+					</button>
 				</form>
 			{/if}
 		</div>
@@ -228,6 +284,16 @@
 		pointer-events: none;
 	} */
 
+	.gradient-heading {
+		background: var(--youtube-gradient);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+		filter: brightness(2.5);
+		text-shadow: 0 0 16px #d6090990;
+	}
+
 	.submit-form {
 		min-width: 30vw;
 	}
@@ -255,8 +321,12 @@
 		color: #ffffff90;
 	}
 
+	.message {
+		background-color: var(--menu-bg);
+	}
+
 	.channel {
-		border: 1px solid var(--border-color);
+		background-color: #1f1f1f;
 		grid-template-columns: auto 1fr;
 		grid-template-rows: auto 1fr;
 	}
@@ -274,5 +344,85 @@
 	.search-form input:focus {
 		border-bottom: 1px solid var(--text-color);
 		outline: none;
+	}
+
+	/* spinner */
+
+	.spinner {
+		height: 20px;
+		width: 20px;
+		position: absolute;
+		top: calc(50% - 10px);
+		left: calc(50% - 10px);
+		border-radius: 50%;
+		background: white;
+		mix-blend-mode: difference;
+		pointer-events: none;
+		z-index: 10;
+		animation: spinner 2.5s infinite;
+	}
+
+	.spinner::after {
+		content: "";
+		background: white;
+		height: 10px;
+		width: 10px;
+		position: absolute;
+		top: 25%;
+		left: 25%;
+		animation: spinner-after 2.5s 1s infinite;
+	}
+
+	@keyframes spinner {
+		0% {
+			border-radius: 50%;
+			transform: rotate(0deg);
+		}
+		20% {
+			border-radius: 0%;
+			transform: rotate(0deg);
+		}
+		40% {
+			border-radius: 0%;
+			transform: rotate(45deg);
+		}
+		60% {
+			border-radius: 0%;
+			transform: rotate(45deg) scaleY(0.5);
+		}
+		80% {
+			border-radius: 0%;
+			transform: rotate(45deg) scaleY(0.5);
+		}
+		80.0001% {
+			border-radius: 0%;
+			transform: rotate(45deg);
+		}
+		100% {
+			border-radius: 50%;
+			transform: rotate(45deg);
+		}
+	}
+
+	@keyframes spinner-after {
+		0% {
+			border-radius: 0%;
+			transform: none;
+		}
+		20% {
+			border-radius: 0%;
+			transform: scaleY(4);
+		}
+		40% {
+			border-radius: 0%;
+			transform: scaleY(4) scaleX(2);
+		}
+		40.0001% {
+			transform: none;
+		}
+		60% {
+			border-radius: 50%;
+			transform: none;
+		}
 	}
 </style>
