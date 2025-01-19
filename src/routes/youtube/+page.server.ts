@@ -110,7 +110,7 @@ export const actions = {
 			AND submitted_on = CURRENT_DATE
 		`;
 
-		if (recentSubmissions[0].count >= 5) {
+		if (recentSubmissions[0].count >= 10) {
 			return fail(429, {
 				error: 'limit reached for this ip address, try again tomorrow'
 			});
