@@ -62,6 +62,11 @@ Check it out at https://niche-internet.vercel.app/
 - **Database**: PostgreSQL
 - **YouTube Data API**: To fetch channel information and metadata.
 
+## Screnshots
+
+![Screenshot](https://cloud-lbmczc5b9-hack-club-bot.vercel.app/0image.png)
+![Screenshot](https://cloud-9ygw6cv5q-hack-club-bot.vercel.app/0image.png)
+
 ## Licenses
 
 See NOTICE.txt for licenses of open source projects used.
