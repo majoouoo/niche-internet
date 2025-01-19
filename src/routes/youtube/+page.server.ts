@@ -182,7 +182,7 @@ export const actions = {
 				votedFor = formData.get('id') as string;
 			}
 
-			cookies.set('votedFor', votedFor, { path: '/' });
+			cookies.set('votedFor', votedFor, { path: '/', maxAge: 60 * 60 * 24 * 365 });
 
 			return {
 				status: 201,
@@ -219,7 +219,7 @@ export const actions = {
 				reported = formData.get('id') as string;
 			}
 
-			cookies.set('reported', reported, { path: '/' });
+			cookies.set('reported', reported, { path: '/', maxAge: 60 * 60 * 24 * 365 });
 
 			return {
 				status: 201,
