@@ -77,11 +77,12 @@
 				class="submit-form flex flex-col items-center gap-4"
 				method="POST"
 				action="?/submit"
-				use:enhance={() => {
+				use:enhance={({ formElement }) => {
 					isSubmitLoading = true;
 					return async ({ result }) => {
 						isSubmitLoading = false;
 						applyAction(result);
+						formElement.reset();
 					};
 				}}
 			>
