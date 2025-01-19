@@ -66,8 +66,8 @@
 	<section class="flex flex-col items-center justify-center relative">
 		<!-- <div class="framing absolute z-20"></div> -->
 
-		<div class="px-4 pb-4 flex flex-col w-full items-center justify-center">
-			<h1 class="my-4">NICHE
+		<div class="px-2 md:px-4 pb-4 flex flex-col w-full items-center justify-center">
+			<h1 class="my-4 text-center">NICHE
 				<span class="gradient-heading">YOUTUBE</span>
 			</h1>
 			<form
@@ -112,24 +112,29 @@
 			</form>
 
 			{#if form?.error}
-				<div class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }} out:fade>
-					<span class="material-symbols-outlined">error</span>
+				<div class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }}>
+					<span class="material-symbols-rounded">error</span>
 					<p>{form.error}</p>
 				</div>
-			{/if}
-			{#if form?.message}
-				<div class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }} out:fade>
-					<span class="material-symbols-outlined">check_circle</span>
+			{:else if form?.message}
+				<div class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }}>
+					<span class="material-symbols-rounded">check_circle</span>
 					<p>{form.message}</p>
 				</div>
+			{:else}
+				<div class="flex gap-2 mt-4 p-2 opacity-0">
+					<span class="material-symbols-rounded">check_circle</span>
+					<p>placeholder</p>
+				</div>
 			{/if}
+			
 			{#if channels.length === 0}
 				<p class="text-center mt-4">no channels found</p>
 			{/if}
 
-			<section class="grid grid-cols-1 w-full gap-4 mt-24 lg:grid-cols-3">
+			<section class="grid grid-cols-1 w-full gap-2 md:gap-4 mt-24 lg:grid-cols-3">
 				{#each channels as channel, i}
-					<div class="channel rounded-lg p-2 grid gap-3 overflow-x-hidden">
+					<div class="channel rounded-xl p-2 grid gap-3 overflow-x-hidden">
 						<a
 							href={'https://youtube.com/@' + channel.handle}
 							target="_blank"
@@ -138,7 +143,7 @@
 							<img
 								src={channel.profile_picture_url}
 								alt={channel.title}
-								class="rounded-sm w-24 aspect-square"
+								class="rounded-md w-16 aspect-square md:w-24"
 								onerror={(e) => { 
 									const target = e.target as HTMLImageElement; 
 									if (target) target.src = placeholderImage; 
@@ -146,7 +151,7 @@
 							/>
 						</a>
 
-						<div class="channel-info grid gap-3">
+						<div class="channel-info grid gap-1 md:gap-3">
 							<div>
 								<h2
 									class="font-bold"
@@ -230,7 +235,7 @@
 				>
 					<input type="hidden" name="offset" value={channels.length} />
 					<input type="hidden" name="query" value={searchQuery} />
-					<button class="underline relative" disabled={isSubmitLoading}>
+					<button class="load-btn underline relative" disabled={isSubmitLoading}>
 						<span style={isSubmitLoading ? "opacity: 0;" : "opacity: 1;"}>load more...</span>
 						{#if isSubmitLoading}
 							<div class="spinner"></div>
@@ -318,7 +323,7 @@
 	.submit-form textarea::placeholder,
 	.submit-form input::placeholder,
 	.search-form input::placeholder {
-		color: #ffffff90;
+		color: inherit;
 	}
 
 	.message {
@@ -344,6 +349,14 @@
 	.search-form input:focus {
 		border-bottom: 1px solid var(--text-color);
 		outline: none;
+	}
+
+	.load-btn {
+		transition: color 0.5s;
+	}
+
+	.load-btn:hover {
+		color: white;
 	}
 
 	/* spinner */

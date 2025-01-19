@@ -123,22 +123,24 @@ export const actions = {
 			const ytItem = ytData.items[0];
 
 			const topicCategories: string[] = [];
-			ytItem.topicDetails.topicCategories.forEach((link: string) => {
-				topicCategories.push(link.substring(link.lastIndexOf('/') + 1));
-			});
-			topicCategories.join(' ');
+			if (ytItem.topicDetails) {
+				ytItem.topicDetails.topicCategories.forEach((link: string) => {
+					topicCategories.push(link.substring(link.lastIndexOf('/') + 1));
+				});
+				topicCategories.join(' ');
+			}
 
 			await sql`
         INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description, ip_address) 
         VALUES (
           ${ytItem.id}, 
           ${ytItem.snippet.customUrl.substring(1)}, 
-          ${ytItem.snippet.title}, 
-          ${ytItem.snippet.description}, 
+          ${ytItem.snippet.title ?? null}, 
+          ${ytItem.snippet.description ?? null}, 
           ${ytItem.statistics.subscriberCount}, 
           ${ytItem.statistics.subscriberCount}, 
-          ${ytItem.snippet.thumbnails.default.url}, 
-          ${topicCategories}, 
+          ${ytItem.snippet.thumbnails.default.url ?? null}, 
+          ${topicCategories ?? null}, 
           ${ytItem.brandingSettings.channel.keywords ?? null}, 
           ${formData.get('description') as string}, 
 					${clientIpAddress}

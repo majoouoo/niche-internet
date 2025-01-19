@@ -11,16 +11,16 @@
 	--web-bg-2: #212e68;
 	--web-gradient: linear-gradient(55deg, var(--web-bg), var(--web-bg-2));
 
-	--youtube-bg: #300b0b;
-	--youtube-bg-2: #6d1919;
+	--youtube-bg: #250303;
+	--youtube-bg-2: #920909;
 	--youtube-gradient: linear-gradient(55deg, var(--youtube-bg), var(--youtube-bg-2));
 
-	--tiktok-bg: #004346;
-	--tiktok-bg-2: #700034;
+	--tiktok-bg: #022224;
+	--tiktok-bg-2: #03767c;
 	--tiktok-gradient: linear-gradient(55deg, var(--tiktok-bg) 10%, var(--tiktok-bg-2));
 
-	--instagram-bg: #4b0d35;
-	--instagram-bg-2: #915006;
+	--instagram-bg: #3b0227;
+	--instagram-bg-2: #995609;
 	--instagram-gradient: linear-gradient(55deg, var(--instagram-bg), var(--instagram-bg-2));
 
 	--text-color: #ffffffbb;
