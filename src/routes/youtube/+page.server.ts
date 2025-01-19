@@ -4,7 +4,8 @@ import 'dotenv/config';
 
 export async function load() {
 	try {
-		const channels = await sql`SELECT * FROM youtube ORDER BY score DESC LIMIT 30`;
+		const channels =
+			await sql`SELECT * FROM youtube WHERE is_banned = false ORDER BY score DESC LIMIT 30`;
 
 		return {
 			channels: channels
@@ -86,10 +87,15 @@ export const actions = {
 			sqlExistsCheck = await sql`SELECT * FROM youtube WHERE id ILIKE ${id}`;
 		}
 
-		if (sqlExistsCheck?.length !== 0) {
-			return fail(409, {
-				error: 'channel is already submitted, vote for it instead'
-			});
+		if (sqlExistsCheck && sqlExistsCheck?.length !== 0) {
+			if (sqlExistsCheck[0].is_banned)
+				return fail(409, {
+					error: 'channel is banned'
+				});
+			else
+				return fail(409, {
+					error: 'channel is already submitted, vote for it instead'
+				});
 		}
 
 		// check if limit per ip is reached
@@ -251,12 +257,13 @@ export const actions = {
 				channels = await sql`
 					SELECT * 
 					FROM youtube 
-					WHERE title ILIKE ${query} 
+					WHERE (title ILIKE ${query} 
 					OR handle ILIKE ${query} 
 					OR topic_categories ILIKE ${query} 
 					OR keywords ILIKE ${query} 
 					OR channel_description ILIKE ${query} 
-					OR user_description ILIKE ${query} 
+					OR user_description ILIKE ${query}) 
+					AND is_banned = false
 					ORDER BY score DESC
 					LIMIT 30
 				`;
@@ -264,6 +271,7 @@ export const actions = {
 				channels = await sql`
 					SELECT * 
 					FROM youtube 
+					WHERE is_banned = false 
 					ORDER BY score DESC 
 					LIMIT 30
 				`;
@@ -299,12 +307,13 @@ export const actions = {
 				channels = await sql`
 					SELECT * 
 					FROM youtube 
-					WHERE title ILIKE ${query} 
+					WHERE (title ILIKE ${query} 
 					OR handle ILIKE ${query} 
 					OR topic_categories ILIKE ${query} 
 					OR keywords ILIKE ${query} 
 					OR channel_description ILIKE ${query} 
-					OR user_description ILIKE ${query} 
+					OR user_description ILIKE ${query}) 
+					AND is_banned = false
 					ORDER BY score DESC
 					LIMIT 30 
 					OFFSET ${offset}
@@ -313,6 +322,7 @@ export const actions = {
 				channels = await sql`
 					SELECT * 
 					FROM youtube 
+					WHERE is_banned = false 
 					ORDER BY score DESC 
 					LIMIT 30 
 					OFFSET ${offset}

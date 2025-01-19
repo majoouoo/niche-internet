@@ -117,7 +117,9 @@
 	<header class="px-4 py-2 grid grid-cols-3 z-30 items-center">
 		<a class="jusitfy-self-start" href="/about">about</a>
 		<img src="/icon.png" alt="" class="h-8 justify-self-center" />
-		<a class="justify-self-end" href="https://github.com/majoouoo/niche-internet" target="_blank">github</a>
+		<a class="justify-self-end" href="https://github.com/majoouoo/niche-internet" target="_blank"
+			>github</a
+		>
 	</header>
 
 	<section

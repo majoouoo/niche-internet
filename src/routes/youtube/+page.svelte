@@ -53,13 +53,15 @@
 				class="submit-btn px-2 py-1 rounded-md relative"
 				onmouseenter={() => (isBtnHover = true)}
 				onmouseleave={() => (isBtnHover = false)}
-				disabled={isSearchLoading}>
-					<span style={isSearchLoading ? "opacity: 0;" : "opacity: 1;"}>{searchQuery ? 'show all' : 'search'}</span>
-					{#if isSearchLoading}
-						<div class="spinner"></div>
-					{/if}
-				</button
+				disabled={isSearchLoading}
 			>
+				<span style={isSearchLoading ? 'opacity: 0;' : 'opacity: 1;'}
+					>{searchQuery ? 'show all' : 'search'}</span
+				>
+				{#if isSearchLoading}
+					<div class="spinner"></div>
+				{/if}
+			</button>
 		</form>
 	</header>
 
@@ -67,7 +69,8 @@
 		<!-- <div class="framing absolute z-20"></div> -->
 
 		<div class="px-2 md:px-4 pb-4 flex flex-col w-full items-center justify-center">
-			<h1 class="my-4 text-center">NICHE
+			<h1 class="my-4 text-center">
+				NICHE
 				<span class="gradient-heading">YOUTUBE</span>
 			</h1>
 			<form
@@ -75,11 +78,11 @@
 				method="POST"
 				action="?/submit"
 				use:enhance={() => {
-					isSubmitLoading = true
+					isSubmitLoading = true;
 					return async ({ result }) => {
-						isSubmitLoading = false
-						applyAction(result)
-					}
+						isSubmitLoading = false;
+						applyAction(result);
+					};
 				}}
 			>
 				<input
@@ -102,22 +105,28 @@
 					class="submit-btn flex items-center justify-center px-8 py-3 rounded-lg relative"
 					onmouseenter={() => (isBtnHover = true)}
 					onmouseleave={() => (isBtnHover = false)}
-					disabled={isSubmitLoading}>
-						<span style={isSubmitLoading ? "opacity: 0;" : "opacity: 1;"}>submit a channel</span>
-						{#if isSubmitLoading}
-							<div class="spinner"></div>
-						{/if}
-					</button
+					disabled={isSubmitLoading}
 				>
+					<span style={isSubmitLoading ? 'opacity: 0;' : 'opacity: 1;'}>submit a channel</span>
+					{#if isSubmitLoading}
+						<div class="spinner"></div>
+					{/if}
+				</button>
 			</form>
 
 			{#if form?.error}
-				<div class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }}>
+				<div
+					class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full"
+					in:fly={{ y: -20, duration: 1000 }}
+				>
 					<span class="material-symbols-rounded">error</span>
 					<p>{form.error}</p>
 				</div>
 			{:else if form?.message}
-				<div class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full" in:fly={{ y: -20, duration: 1000 }}>
+				<div
+					class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full"
+					in:fly={{ y: -20, duration: 1000 }}
+				>
 					<span class="material-symbols-rounded">check_circle</span>
 					<p>{form.message}</p>
 				</div>
@@ -127,7 +136,7 @@
 					<p>placeholder</p>
 				</div>
 			{/if}
-			
+
 			{#if channels.length === 0}
 				<p class="text-center mt-4">no channels found</p>
 			{/if}
@@ -144,9 +153,9 @@
 								src={channel.profile_picture_url}
 								alt={channel.title}
 								class="rounded-md w-16 aspect-square md:w-24"
-								onerror={(e) => { 
-									const target = e.target as HTMLImageElement; 
-									if (target) target.src = placeholderImage; 
+								onerror={(e) => {
+									const target = e.target as HTMLImageElement;
+									if (target) target.src = placeholderImage;
 								}}
 							/>
 						</a>
@@ -175,39 +184,44 @@
 									</p>
 								{/if}
 							</div>
-							<form class="flex flex-col gap-0.5 relative" method="POST" use:enhance={({ action }) => {
-								channel.isLoading = true
-								return async ({ result }) => {
-									channel.isLoading = false
-									await applyAction(result)
-									if (result.type === "success") {
-										// increment votes or reports by 1
-										channel[action.search.substring(2) + "s"] += 1
-									}
-								}
-								}
-							}>
+							<form
+								class="flex flex-col gap-0.5 relative"
+								method="POST"
+								use:enhance={({ action }) => {
+									channel.isLoading = true;
+									return async ({ result }) => {
+										channel.isLoading = false;
+										await applyAction(result);
+										if (result.type === 'success') {
+											// increment votes or reports by 1
+											channel[action.search.substring(2) + 's'] += 1;
+										}
+									};
+								}}
+							>
 								<input type="hidden" name="id" value={channel.id} />
-								<div class="relative flex flex-col gap-0.5" style={channel.isLoading ? "opacity: 0;" : "opacity: 1;"}>
+								<div
+									class="relative flex flex-col gap-0.5"
+									style={channel.isLoading ? 'opacity: 0;' : 'opacity: 1;'}
+								>
 									<button
 										class="vote-btn px-4 py-1 rounded-md"
 										onmouseenter={() => (isBtnHover = true)}
 										onmouseleave={() => (isBtnHover = false)}
-										formaction="?/vote">vote
-										</button
-									>
+										formaction="?/vote"
+										>vote
+									</button>
 									<button
 										class="underline"
 										onmouseenter={() => (isBtnHover = true)}
 										onmouseleave={() => (isBtnHover = false)}
-										formaction="?/report">report
-										</button
-									>
+										formaction="?/report"
+										>report
+									</button>
 								</div>
 								{#if channel.isLoading}
 									<div class="spinner"></div>
 								{/if}
-								
 							</form>
 							<p class="text-5xl">{channel.votes}</p>
 						</div>
@@ -236,7 +250,7 @@
 					<input type="hidden" name="offset" value={channels.length} />
 					<input type="hidden" name="query" value={searchQuery} />
 					<button class="load-btn underline relative" disabled={isSubmitLoading}>
-						<span style={isSubmitLoading ? "opacity: 0;" : "opacity: 1;"}>load more...</span>
+						<span style={isSubmitLoading ? 'opacity: 0;' : 'opacity: 1;'}>load more...</span>
 						{#if isSubmitLoading}
 							<div class="spinner"></div>
 						{/if}
@@ -323,7 +337,7 @@
 	.submit-form textarea::placeholder,
 	.submit-form input::placeholder,
 	.search-form input::placeholder {
-		color: inherit;
+		color: #ffffff60;
 	}
 
 	.message {
@@ -376,7 +390,7 @@
 	}
 
 	.spinner::after {
-		content: "";
+		content: '';
 		background: white;
 		height: 10px;
 		width: 10px;
