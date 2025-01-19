@@ -49,12 +49,16 @@ export const actions = {
 			id = channel.substring(
 				channel.indexOf('youtube.com/channel/') + 'youtube.com/channel/'.length
 			);
+			id = id.split('/')[0];
 		} else if (channel.includes('youtube.com/user/')) {
 			handle = channel.substring(channel.indexOf('youtube.com/user/') + 'youtube.com/user/'.length);
+			handle = handle.split('/')[0];
 		} else if (channel.includes('youtube.com/c/')) {
 			handle = channel.substring(channel.indexOf('youtube.com/c/') + 'youtube.com/c/'.length);
+			handle = handle.split('/')[0];
 		} else if (channel.includes('youtube.com/')) {
 			handle = channel.substring(channel.indexOf('youtube.com/') + 'youtube.com/'.length);
+			handle = handle.split('/')[0];
 		} else {
 			handle = channel;
 		}
