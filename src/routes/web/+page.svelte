@@ -117,7 +117,7 @@
 
 			{#if form?.error}
 				<div
-					class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full"
+					class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full z-50"
 					in:fly={{ y: -20, duration: 1000 }}
 				>
 					<span class="material-symbols-rounded">error</span>
@@ -125,7 +125,7 @@
 				</div>
 			{:else if form?.message}
 				<div
-					class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full"
+					class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full z-50"
 					in:fly={{ y: -20, duration: 1000 }}
 				>
 					<span class="material-symbols-rounded">check_circle</span>
@@ -151,12 +151,16 @@
 							class="row-span-full"
 						>
 							<img
-								src={'https://' + website.url + '/favicon.ico'}
+								src={`https://www.google.com/s2/favicons?domain=${website.url}&sz=64`}
 								alt={'https://' + website.url}
 								class="rounded-md w-16 aspect-square"
 								onerror={(e) => {
 									const target = e.target as HTMLImageElement;
 									if (target) target.src = placeholderImage;
+								}}
+								onload={(e) => {
+									const target = e.target as HTMLImageElement;
+									if (target.naturalWidth === 16) target.src = placeholderImage;
 								}}
 							/>
 						</a>

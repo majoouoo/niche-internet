@@ -117,7 +117,7 @@
 
 			{#if form?.error}
 				<div
-					class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full"
+					class="message flex gap-2 mt-4 text-red-300 sticky top-2 p-2 rounded-full z-50"
 					in:fly={{ y: -20, duration: 1000 }}
 				>
 					<span class="material-symbols-rounded">error</span>
@@ -125,7 +125,7 @@
 				</div>
 			{:else if form?.message}
 				<div
-					class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full"
+					class="message flex gap-2 mt-4 text-green-300 sticky top-2 p-2 rounded-full z-50"
 					in:fly={{ y: -20, duration: 1000 }}
 				>
 					<span class="material-symbols-rounded">check_circle</span>
