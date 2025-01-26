@@ -171,7 +171,7 @@ export const actions = {
 	vote: async ({ request, cookies }) => {
 		const formData = await request.formData();
 
-		let votedFor = cookies.get('votedFor');
+		let votedFor = cookies.get('votedForYT');
 
 		if (votedFor && votedFor.includes(formData.get('id') as string))
 			return fail(409, {
@@ -192,7 +192,7 @@ export const actions = {
 				votedFor = formData.get('id') as string;
 			}
 
-			cookies.set('votedFor', votedFor, { path: '/', maxAge: 60 * 60 * 24 * 365 });
+			cookies.set('votedForYT', votedFor, { path: '/', maxAge: 60 * 60 * 24 * 365 });
 
 			return {
 				status: 201,
@@ -208,7 +208,7 @@ export const actions = {
 	report: async ({ request, cookies }) => {
 		const formData = await request.formData();
 
-		let reported = cookies.get('reported');
+		let reported = cookies.get('reportedYT');
 
 		if (reported && reported.includes(formData.get('id') as string))
 			return fail(409, {
@@ -229,7 +229,7 @@ export const actions = {
 				reported = formData.get('id') as string;
 			}
 
-			cookies.set('reported', reported, { path: '/', maxAge: 60 * 60 * 24 * 365 });
+			cookies.set('reportedYT', reported, { path: '/', maxAge: 60 * 60 * 24 * 365 });
 
 			return {
 				status: 201,

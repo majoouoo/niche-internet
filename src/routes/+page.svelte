@@ -139,9 +139,9 @@
 					onmouseenter={() => (theme = 'web')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'web' || theme === 'menu' ? 'color: var(--text-color);' : ''}
-					href="/#"
+					href="/web"
 				>
-					<h2>NICHE WEB <sup>soon</sup></h2>
+					<h2>NICHE WEB</h2>
 				</a>
 
 				<a
@@ -250,5 +250,13 @@
 		border-radius: 2rem;
 		box-shadow: 0 0 0 10rem var(--menu-bg);
 		pointer-events: none;
+	}
+
+	@media (max-width: 640px) {
+		.framing {
+			height: calc(100% - 0.5rem);
+			width: calc(100% - 1rem);
+			border-radius: 1rem;
+		}
 	}
 </style>
