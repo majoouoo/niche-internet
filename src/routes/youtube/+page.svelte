@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance, applyAction } from '$app/forms';
-	import { fly, fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	let { data, form } = $props();
 
 	let channels: any[] = $state(data.channels ?? []);

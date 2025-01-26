@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import { fly } from 'svelte/transition';
 	let { data } = $props();
+
+	let cookiesAccepted = $state('true');
 
 	let theme: string = $state('menu');
 
@@ -23,6 +26,8 @@
 	let seaAnimationInterval: NodeJS.Timeout;
 
 	onMount(() => {
+		cookiesAccepted = localStorage.getItem('cookiesAccepted') ?? '';
+
 		windowWidth = window.innerWidth;
 		windowHeight = window.innerHeight;
 
@@ -197,6 +202,19 @@
 			</div>
 		</div>
 	</section>
+
+	{#if cookiesAccepted !== 'true'}
+		<p class="justify-self-center text-sm z-50 fixed bottom-2" out:fly>
+			by using this site, you accept cookies for functionality.
+			<button
+				class="underline"
+				onclick={() => {
+					localStorage.setItem('cookiesAccepted', 'true');
+					cookiesAccepted = 'true';
+				}}>ok</button
+			>
+		</p>
+	{/if}
 </div>
 
 <style lang="postcss">
