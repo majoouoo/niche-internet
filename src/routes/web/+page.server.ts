@@ -46,10 +46,7 @@ export const actions = {
 		url = url.replace(/[^a-zA-Z0-9._-]/g, '');
 		description = description.replace(/[^a-zA-Z0-9-_.,:;() \r\n]/g, '');
 
-		if (
-			url !== unsanitizedUrl ||
-			description !== formData.get('description')
-		)
+		if (url !== unsanitizedUrl || description !== formData.get('description'))
 			return fail(400, {
 				error: 'invalid characters in url or description'
 			});

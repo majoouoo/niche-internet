@@ -145,11 +145,7 @@
 			<section class="grid grid-cols-1 w-full gap-2 md:gap-4 mt-24 lg:grid-cols-3">
 				{#each websites as website, i}
 					<div class="website rounded-xl p-2 grid gap-3 overflow-x-hidden">
-						<a
-							href={'https://' + website.url}
-							target="_blank"
-							class="row-span-full"
-						>
+						<a href={'https://' + website.url} target="_blank" class="row-span-full">
 							<img
 								src={`https://www.google.com/s2/favicons?domain=${website.url}&sz=64`}
 								alt={'https://' + website.url}
@@ -172,9 +168,7 @@
 									class:text-red-300={website.reports >= 4 && !isBtnHover}
 									style="transition: color 0.5s;"
 								>
-									<a href={'https://' + website.url} target="_blank"
-										>{website.url}</a
-									>
+									<a href={'https://' + website.url} target="_blank">{website.url}</a>
 								</h2>
 								{#if website.reports >= 4}
 									<p

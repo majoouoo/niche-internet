@@ -41,6 +41,7 @@
 		"web-vitals": "^3.5.0"
 	},
 	"dependencies": {
+		"@vercel/analytics": "^1.4.1",
 		"dotenv": "^16.4.7",
 		"postgres": "^3.4.5"
 	}
