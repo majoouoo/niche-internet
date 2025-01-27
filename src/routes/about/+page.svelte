@@ -16,28 +16,39 @@
 	</header>
 
 	<div class="flex justify-center items-center flex-col gap-8 px-2 pt-32 pb-24">
+		<h1 class="text-2xl">about</h1>
 		<p class="about-text">
 			<strong>niche internet</strong> is a place to discover unknown creators who deserve more
 			attention.<br /><br />
 
-			You can submit channels you’ve found, add a short description, and vote for your favorites.
-			Our <strong>algorithm</strong> then highlights channels with the most votes but the fewest
-			subscribers, so even the smallest creators with great content can be seen.<br /><br />
+			You can submit creators and websites you’ve found, add a short description, and vote for your
+			favorites. Our <strong>algorithm</strong> then highlights profiles with the most votes but the
+			fewest subscribers or followers, so even the smallest creators with great content can be seen.<br
+			/><br />
 
-			With the <strong>search</strong> feature, you can find creators by keywords and topics. It
+			With the <strong>search</strong> feature, you can find profiles by keywords and topics. It
 			looks through YouTube tags, channel descriptions, and user-submitted descriptions, making it
 			easy to find content that matches your interests.<br /><br />
 
 			Explore the internet’s hidden gems.
 		</p>
 		<div class="divider"></div>
+		<h1 class="text-2xl">malicious content</h1>
 		<p class="about-text">
 			NSFW or malicious content is not allowed on this site.<br /><br />
 			This website is moderated, however the owner does not take responsibility for the content shared
-			by the creators featured here.<br /><br />
+			by the creators or the websites submitted here.<br /><br />
 			If you find any content that violates the rules, please report it, it will be taken down.
 		</p>
 		<div class="divider"></div>
+		<h1 class="text-2xl">privacy</h1>
+		<p class="about-text">
+			This website uses cookies to store the submissions you’ve voted for.<br /><br />
+			No personal information is stored or shared with third parties. By using this website, you agree
+			to the use of cookies.
+		</p>
+		<div class="divider"></div>
+		<h1 class="text-2xl">open-source libraries</h1>
 		<p class="about-text">
 			This website uses the following open-source projects:<br /><br />
 			<a href="https://svelte.dev/" target="_blank">Svelte</a> &copy; 2016-2025 Svelte contributors

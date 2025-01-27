@@ -22,7 +22,6 @@ export const actions = {
 	submit: async (event) => {
 		const request = event.request;
 		const formData = await request.formData();
-		const clientIpAddress = event.getClientAddress();
 
 		if (!formData.has('channel') || !formData.has('description'))
 			return fail(400, {
@@ -102,20 +101,6 @@ export const actions = {
 				});
 		}
 
-		// check if limit per ip is reached
-		const recentSubmissions = await sql`
-			SELECT COUNT(*) 
-			FROM youtube 
-			WHERE ip_address = ${clientIpAddress} 
-			AND submitted_on = CURRENT_DATE
-		`;
-
-		if (recentSubmissions[0].count >= 10) {
-			return fail(429, {
-				error: 'limit reached for this ip address, try again tomorrow'
-			});
-		}
-
 		const fetchUrl =
 			`https://www.googleapis.com/youtube/v3/channels?part=brandingSettings,snippet,statistics,topicDetails&key=${process.env.YOUTUBE_API_KEY as string}` +
 			(id ? `&id=${id}` : `&forHandle=${handle}`);
@@ -141,7 +126,7 @@ export const actions = {
 			}
 
 			await sql`
-        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description, ip_address) 
+        INSERT INTO youtube (id, handle, title, channel_description, subscribers, initial_subscribers, profile_picture_url, topic_categories, keywords, user_description) 
         VALUES (
           ${ytItem.id}, 
           ${ytItem.snippet.customUrl.substring(1)}, 
@@ -152,8 +137,7 @@ export const actions = {
           ${ytItem.snippet.thumbnails.default.url ?? null}, 
           ${topicCategories ?? null}, 
           ${ytItem.brandingSettings.channel.keywords ?? null}, 
-          ${formData.get('description') as string}, 
-					${clientIpAddress}
+          ${formData.get('description') as string}
         ) 
         ON CONFLICT (id) DO NOTHING`;
 

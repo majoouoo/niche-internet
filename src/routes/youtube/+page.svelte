@@ -66,8 +66,6 @@
 	</header>
 
 	<section class="flex flex-col items-center justify-center relative">
-		<!-- <div class="framing absolute z-20"></div> -->
-
 		<div class="px-2 md:px-4 pb-4 flex flex-col w-full items-center justify-center">
 			<h1 class="my-4 text-center">
 				NICHE
@@ -263,10 +261,6 @@
 </div>
 
 <style lang="postcss">
-	/* .w-full {
-		width: calc(100% - 2rem);
-	} */
-
 	.bg {
 		transition: color 0.5s;
 		background: var(--menu-bg);
@@ -293,16 +287,6 @@
 	header {
 		background-color: var(--menu-bg);
 	}
-
-	/* .framing {
-		height: calc(100% - 1rem);
-		width: calc(100% - 2rem);
-		top: 0;
-		margin: auto;
-		border-radius: 2rem;
-		box-shadow: 0 0 0 10rem var(--menu-bg);
-		pointer-events: none;
-	} */
 
 	.gradient-heading {
 		background: var(--youtube-gradient);

@@ -204,7 +204,7 @@
 	</section>
 
 	{#if cookiesAccepted !== 'true'}
-		<p class="justify-self-center text-sm z-50 fixed bottom-2" out:fly>
+		<p class="justify-self-center text-center text-sm z-50 fixed bottom-2" out:fly>
 			by using this site, you accept cookies for functionality.
 			<button
 				class="underline"

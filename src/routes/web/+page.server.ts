@@ -22,7 +22,6 @@ export const actions = {
 	submit: async (event) => {
 		const request = event.request;
 		const formData = await request.formData();
-		const clientIpAddress = event.getClientAddress();
 
 		if (!formData.has('url') || !formData.has('description'))
 			return fail(400, {
@@ -65,27 +64,12 @@ export const actions = {
 				});
 		}
 
-		// check if limit per ip is reached
-		const recentSubmissions = await sql`
-			SELECT COUNT(*) 
-			FROM web 
-			WHERE ip_address = ${clientIpAddress} 
-			AND submitted_on = CURRENT_DATE
-		`;
-
-		if (recentSubmissions[0].count >= 10) {
-			return fail(429, {
-				error: 'limit reached for this ip address, try again tomorrow'
-			});
-		}
-
 		try {
 			await sql`
-        INSERT INTO web (url, user_description, ip_address) 
+        INSERT INTO web (url, user_description) 
         VALUES (
           ${url},
-          ${formData.get('description') as string}, 
-					${clientIpAddress}
+          ${formData.get('description') as string}
         ) 
         ON CONFLICT (url) DO NOTHING`;
 

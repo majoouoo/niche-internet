@@ -15,8 +15,8 @@
 	--youtube-bg-2: #920909;
 	--youtube-gradient: linear-gradient(55deg, var(--youtube-bg), var(--youtube-bg-2));
 
-	--tiktok-bg: #022224;
-	--tiktok-bg-2: #03767c;
+	--tiktok-bg: #043336;
+	--tiktok-bg-2: #7c0327;
 	--tiktok-gradient: linear-gradient(55deg, var(--tiktok-bg) 10%, var(--tiktok-bg-2));
 
 	--instagram-bg: #3b0227;
@@ -30,6 +30,7 @@
 body {
 	min-height: 100vh;
 	margin: 0;
+	background-color: var(--menu-bg);
 }
 
 h1,
