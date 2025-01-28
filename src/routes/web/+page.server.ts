@@ -36,6 +36,8 @@ export const actions = {
 				error: 'description must be between 10 and 150 characters'
 			});
 
+		if (url.substring(0, 8) !== 'https://' && url.substring(0, 7) !== 'http://') url = 'https://' + url;
+
 		// extract domain from url
 		let urlObj;
 		try {
