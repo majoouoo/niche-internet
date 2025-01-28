@@ -37,7 +37,15 @@ export const actions = {
 			});
 
 		// extract domain from url
-		const urlObj = new URL(url);
+		let urlObj;
+		try {
+			urlObj = new URL(url);
+		} catch (error) {
+			console.error(error);
+			return fail(400, {
+				error: 'invalid url'
+			});
+		}
 		url = urlObj.hostname;
 
 		// sanitize url and description inputs

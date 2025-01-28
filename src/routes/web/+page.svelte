@@ -164,9 +164,9 @@
 								<h2
 									class="font-bold"
 									class:text-red-300={website.reports >= 4 && !isBtnHover}
-									style="transition: color 0.5s;"
+									style="transition: color 0.5s; overflow-wrap: anywhere;"
 								>
-									<a href={'https://' + website.url} target="_blank">{website.url}</a>
+									<a href={'https://' + website.url} target="_blank">{@html website.url.replaceAll(".", "<wbr />.")}</a>
 								</h2>
 								{#if website.reports >= 4}
 									<p

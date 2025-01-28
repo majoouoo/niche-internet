@@ -160,7 +160,7 @@
 				</a>
 
 				<a
-					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					class="card flex items-center justify-center px-8 py-3 rounded-lg border-dashed"
 					onmouseenter={() => (theme = 'tiktok')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'tiktok' || theme === 'menu' ? 'color: var(--text-color);' : ''}
@@ -170,7 +170,7 @@
 				</a>
 
 				<a
-					class="card flex items-center justify-center px-8 py-3 rounded-lg"
+					class="card flex items-center justify-center px-8 py-3 rounded-lg border-dashed"
 					onmouseenter={() => (theme = 'instagram')}
 					onmouseleave={() => (theme = 'menu')}
 					style={theme === 'instagram' || theme === 'menu' ? 'color: var(--text-color);' : ''}
@@ -235,7 +235,8 @@
 			color 0.5s,
 			border-color 0.5s;
 		text-decoration: none;
-		border: 1px solid var(--border-color);
+		border-width: 1px;
+		border-color: var(--border-color);
 	}
 
 	.card:hover {
